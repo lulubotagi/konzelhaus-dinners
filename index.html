@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Konzelhaus Weeknight Dinners</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -23,6 +26,8 @@
               terradark: '#A85A38',
               charcoal: '#2D2D2D',
               muted: '#8B8680',
+              sage: '#5B7A5E',
+              sagedark: '#4A6A4D',
             }
           }
         }
@@ -30,162 +35,488 @@
     </script>
     <style>
       body { background-color: #FAF7F2; }
-      .recipe-card {
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-      }
-      .recipe-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 32px rgba(0,0,0,0.08);
-      }
-      .time-badge {
-        background: linear-gradient(135deg, #C4704B, #A85A38);
-      }
+      .recipe-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+      .recipe-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+      .time-badge { background: linear-gradient(135deg, #C4704B, #A85A38); }
+      .hero-gradient { background: linear-gradient(135deg, var(--g1), var(--g2)); }
+      .sidebar-link { transition: background-color 0.15s ease; }
+      .sidebar-link:hover { background-color: rgba(91,122,94,0.08); }
+      .sidebar-link.active { background-color: rgba(91,122,94,0.12); color: #5B7A5E; }
+      .ingredient-card { border-left: 3px solid #5B7A5E; }
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-thumb { background: #d4cfc7; border-radius: 3px; }
     </style>
 </head>
 <body class="font-sans text-charcoal antialiased">
+    <div id="root"></div>
 
-    <!-- Hero -->
-    <header class="px-6 pt-16 pb-12 md:pt-24 md:pb-16 max-w-4xl mx-auto text-center">
-        <p class="text-muted text-sm tracking-widest uppercase mb-4">The Konzelmann Family</p>
-        <h1 class="font-serif text-5xl md:text-7xl text-charcoal leading-tight">
-            Weeknight<br><em>Dinners</em>
-        </h1>
-        <p class="mt-6 text-muted text-lg max-w-md mx-auto leading-relaxed">
-            Nine tried-and-true meals. All under 30 minutes of prep. Built for busy nights and hungry kids.
-        </p>
-    </header>
+    <script type="text/babel">
+      const { useState, useEffect } = React;
 
-    <!-- Divider -->
-    <div class="max-w-16 mx-auto border-t border-terra/30 mb-12"></div>
+      const recipes = [
+        {
+          id: "pasta-meatballs",
+          name: "Pasta & Meatballs",
+          subtitle: "One Skillet Wonder",
+          time: "20 min",
+          method: "One Skillet",
+          description: "Cheesy skillet pasta with meatballs and broccoli. Everything cooks together — kid-approved comfort food.",
+          longDescription: "A complete meal that comes together in one skillet. Pasta, frozen meatballs, and broccoli simmer in chicken broth, then get blanketed in cheesy cheddar sauce. The kind of dinner where everyone asks for seconds.",
+          sourceUrl: "https://wearychef.com/recipe/cheesy-skillet-pasta-meatballs-broccoli/",
+          sourceName: "The Weary Chef",
+          gradient: ["#E8D5B7", "#D4A574"],
+          emoji: "🍝",
+          sections: [
+            {
+              title: "Ingredients",
+              items: ["2 cups chicken broth", "1 cup water", "2½ cups bite-sized pasta", "2 cups frozen meatballs", "12 oz fresh broccoli florets", "10.75 oz can cheddar cheese soup", "¼ cup milk (if needed)"]
+            }
+          ],
+          steps: ["Bring chicken broth and water to a simmer in a 12\" skillet over medium-high heat.", "Add pasta, meatballs, and broccoli. Return to a simmer.", "Cover loosely and cook 10 minutes, stirring frequently, until pasta is cooked.", "Reduce heat to low. Stir in cheese soup. Cook 3 more minutes.", "Add milk to thin sauce if needed. Serve immediately."]
+        },
+        {
+          id: "gyro-pita",
+          name: "Gyro Pita",
+          subtitle: "Build Your Own",
+          time: "25 min",
+          method: "Grill + Assemble",
+          description: "Seasoned chicken, quick homemade tzatziki, warm pitas. Set out toppings and let everyone build their own.",
+          longDescription: "Juicy marinated chicken thighs get charred on the grill, then sliced and tucked into warm pitas with fresh veggies and a cool, garlicky tzatziki. Set out all the toppings and let everyone customize their own.",
+          sourceUrl: "https://www.wenthere8this.com/chicken-gyro-pita/",
+          sourceName: "Went Here 8 This",
+          gradient: ["#D4E8D0", "#A8C9A4"],
+          emoji: "🥙",
+          sections: [
+            {
+              title: "Chicken Marinade",
+              items: ["1.5 lbs boneless skinless chicken thighs", "½ cup plain Greek yogurt", "2 Tbsp olive oil", "Juice of 1 lemon", "4 cloves garlic, minced", "1 Tbsp red wine vinegar", "1 tsp dried oregano", "1 tsp honey", "Salt and black pepper"]
+            },
+            {
+              title: "Tzatziki Sauce",
+              items: ["1 cup plain Greek yogurt (full fat)", "½ cucumber, shredded and squeezed dry", "1 Tbsp fresh lemon juice", "1 Tbsp olive oil", "1 tsp garlic powder", "1 Tbsp fresh dill, chopped", "Salt to taste"]
+            },
+            {
+              title: "To Serve",
+              items: ["Pita bread", "Sliced tomatoes", "Lettuce", "Sliced red onion", "Feta cheese crumbles"]
+            }
+          ],
+          steps: ["Combine marinade ingredients. Marinate chicken 30 min (or up to 12 hours).", "Make tzatziki: combine all sauce ingredients, refrigerate until ready.", "Grill chicken over medium-high heat, 4–6 min per side (165°F internal).", "Rest 5 minutes, then slice into strips.", "Warm pitas and set out all toppings. Build your own!"]
+        },
+        {
+          id: "sheet-pan-chicken",
+          name: "Chicken & Sweet Potatoes",
+          subtitle: "The Sheet Pan Classic",
+          time: "40 min",
+          method: "Sheet Pan",
+          description: "One pan — chicken thighs, sweet potatoes, broccoli with herbs. 10 min prep, then the oven does the work.",
+          longDescription: "A hands-off dinner where the oven does the heavy lifting. Sweet potatoes get a head start, then chicken, broccoli, and red onion join the party with herbs and a touch of nutmeg. Finished with pecans and dried cranberries for a surprising twist.",
+          sourceUrl: "https://www.cookingclassy.com/chicken-broccoli-sweet-potato-sheet-pan-dinner/",
+          sourceName: "Cooking Classy",
+          gradient: ["#F0D4B8", "#E0A87C"],
+          emoji: "🍠",
+          sections: [
+            {
+              title: "Main Ingredients",
+              items: ["20 oz sweet potatoes, peeled and cubed (¾ inch)", "4 Tbsp olive oil, divided", "1½ lbs boneless skinless chicken breasts, diced", "4 cups small broccoli florets", "½ medium red onion, diced into chunks", "3 cloves garlic, minced"]
+            },
+            {
+              title: "Seasonings",
+              items: ["¾ tsp each: dried thyme, sage, parsley, rosemary", "⅛ tsp nutmeg", "Salt and freshly ground black pepper"]
+            },
+            {
+              title: "Finishing",
+              items: ["½ cup pecans, roughly chopped", "⅓ cup dried cranberries"]
+            }
+          ],
+          steps: ["Preheat oven to 400°F. Toss sweet potatoes with 1 Tbsp oil on a sheet pan.", "Roast sweet potatoes 15 minutes. Prep remaining ingredients.", "Add chicken, broccoli, onion. Drizzle with remaining 3 Tbsp oil.", "Sprinkle garlic, herbs, nutmeg, salt and pepper. Toss to coat.", "Roast 16–20 minutes more, tossing halfway, until chicken reaches 165°F.", "Toss in pecans and cranberries. Serve immediately."]
+        },
+        {
+          id: "gnocchi-fennel",
+          name: "Gnocchi, Fennel & Sausage",
+          subtitle: "Comfort Meets Crispy",
+          time: "35 min",
+          method: "Sheet Pan",
+          description: "Toss gnocchi, sliced fennel, and chicken sausage with olive oil. Roast until crispy and golden.",
+          longDescription: "Pillowy shelf-stable gnocchi gets roasted until golden and crispy alongside sliced fennel, broccolini, and chicken sausage. No boiling required. The fennel fronds make a beautiful fresh garnish — it's comfort food that looks elegant.",
+          sourceUrl: "https://thehungrymusician.com/recipes/sheet-pan-gnocchi-fennel-chicken-sausage",
+          sourceName: "The Hungry Musician",
+          gradient: ["#E0D8CC", "#C4B8A4"],
+          emoji: "🫓",
+          sections: [
+            {
+              title: "Ingredients",
+              items: ["1 lb shelf-stable gnocchi (from pasta aisle)", "1 large fennel bulb, thinly sliced (save fronds)", "1 bunch broccolini, trimmed and chopped", "12 oz fully-cooked Italian chicken sausage, sliced", "3 Tbsp olive oil", "Salt and pepper", "Red pepper flakes (optional)", "Fennel fronds for garnish", "Parmesan cheese for serving"]
+            }
+          ],
+          steps: ["Preheat oven to 425°F. Line a large sheet pan with parchment.", "Toss gnocchi, sliced fennel, broccolini, and sausage with olive oil.", "Season with salt, pepper, and optional red pepper flakes.", "Spread in a single layer. Roast 25 minutes, tossing halfway.", "Gnocchi should be golden and crispy. Top with fennel fronds and parmesan."]
+        },
+        {
+          id: "curry-chicken",
+          name: "Indian Chicken & Peas",
+          subtitle: "Weeknight Curry",
+          time: "25 min",
+          method: "Stovetop",
+          description: "Quick curry with chicken, peas, and warm spices. Serve over basmati rice for a cozy weeknight meal.",
+          longDescription: "A 25-minute curry that tastes like it simmered for hours. Cubed chicken breast cooks with scallions and garlic, then simmers in a curry-broth sauce with sweet green peas. Fresh cilantro at the end makes it sing. Serve over brown rice.",
+          sourceUrl: "https://www.cleaneatingmag.com/recipes/curried-chicken-with-peas/",
+          sourceName: "Clean Eating",
+          gradient: ["#F0E0B0", "#D4C080"],
+          emoji: "🍛",
+          sections: [
+            {
+              title: "Curry",
+              items: ["1 Tbsp olive oil", "½ cup chopped scallions", "2 cloves garlic, minced", "1 lb boneless skinless chicken breast, cubed", "2 Tbsp mild or hot curry paste", "1 cup low-sodium chicken broth", "½ cup frozen green peas", "2 Tbsp chopped fresh cilantro", "Salt and pepper to taste"]
+            },
+            {
+              title: "To Serve",
+              items: ["2 cups cooked brown rice (or basmati)"]
+            }
+          ],
+          steps: ["Heat oil in a wok or large skillet on medium-high.", "Add scallions and garlic, cook 1 minute.", "Add chicken, cook 2 minutes until golden on all sides.", "Whisk curry paste into broth. Add to pan, bring to simmer.", "Simmer 2 minutes until chicken is cooked through.", "Add peas, cook 30 seconds until tender.", "Remove from heat, stir in cilantro. Season and serve over rice."]
+        },
+        {
+          id: "chicken-burger",
+          name: "Chicken Burgers",
+          subtitle: "Lighter But Still Juicy",
+          time: "25 min",
+          method: "Skillet / Grill",
+          description: "Seasoned ground chicken patties, pan-fried or grilled. Lighter than beef but still juicy and satisfying.",
+          longDescription: "The secret to a juicy chicken burger is sautéed onions and a spoonful of mayo mixed right into the meat. Panko breadcrumbs hold it all together without making them dense. Grill or pan-fry, then load up with your favorite toppings.",
+          sourceUrl: "https://www.budgetbytes.com/chicken-burger/",
+          sourceName: "Budget Bytes",
+          gradient: ["#E8D0C0", "#D4A890"],
+          emoji: "🍔",
+          sections: [
+            {
+              title: "Burger Patties",
+              items: ["1 Tbsp cooking oil", "¼ cup yellow onion, minced", "1 lb ground chicken", "¼ cup panko breadcrumbs", "2 Tbsp mayonnaise", "1 Tbsp fresh parsley, minced", "1 tsp Worcestershire sauce", "½ tsp salt", "½ tsp garlic powder", "¼ tsp black pepper"]
+            },
+            {
+              title: "To Serve",
+              items: ["4 hamburger buns", "Sliced red onion", "Lettuce", "Sliced tomato", "Pickles"]
+            }
+          ],
+          steps: ["Heat oil in a skillet. Sauté minced onion 2–3 minutes until soft.", "Combine chicken, sautéed onion, panko, mayo, parsley, and seasonings.", "Shape into 4 patties. Press a thumb indent in the center of each.", "Grill or pan-fry 4–5 minutes per side until internal temp reaches 165°F.", "Toast buns. Rest patties a few minutes, then serve with toppings."]
+        },
+        {
+          id: "pizza",
+          name: "Homemade Pizza",
+          subtitle: "Family Pizza Night",
+          time: "30 min",
+          method: "Family Activity",
+          description: "5-ingredient no-rise dough, ready in 30 minutes total. Kids pick their own toppings — everyone wins.",
+          longDescription: "A weekly tradition in the making. This 5-ingredient dough comes together fast with no rise time needed. Roll it out, top it however you want, and bake on a hot pizza stone or sheet pan. The kids get to pick their own toppings — which means they actually eat it.",
+          sourceUrl: "https://joyfoodsunshine.com/easy-homemade-pizza-dough/",
+          sourceName: "Joy Food Sunshine",
+          gradient: ["#F2D4C0", "#E0B090"],
+          emoji: "🍕",
+          sections: [
+            {
+              title: "Pizza Dough",
+              items: ["1 cup warm water (105°F)", "1 packet (2¼ tsp) active dry yeast", "1 tsp sugar", "2½ cups all-purpose flour (plus more for kneading)", "2 Tbsp olive oil", "¾ tsp salt"]
+            },
+            {
+              title: "Suggested Toppings",
+              items: ["Pizza sauce (or homemade)", "Shredded mozzarella cheese", "Pepperoni", "Italian sausage", "Bell peppers, mushrooms, olives", "Fresh basil"]
+            }
+          ],
+          steps: ["Preheat oven to 500°F with pizza stone or baking sheet inside.", "Dissolve sugar and yeast in warm water. Let sit 5 min until foamy.", "Stir in olive oil, then flour and salt. Mix until a sticky ball forms.", "Knead on floured surface 3–5 min until smooth.", "Roll out to ½\" thick. Transfer to parchment paper.", "Top with sauce, cheese, and toppings of choice.", "Bake 10–12 minutes until crust is golden and cheese is bubbly."]
+        },
+        {
+          id: "salmon-bowls",
+          name: "Salmon & Rice Bowls",
+          subtitle: "Better Than Takeout",
+          time: "30 min",
+          method: "Broil + Bowl",
+          description: "Teriyaki-glazed salmon over rice with cucumber, avocado, and edamame. Healthy and beautiful.",
+          longDescription: "Glazed salmon fillets broiled until caramelized, served over rice with cool cucumber, creamy avocado, edamame, and shredded carrots. The homemade teriyaki sauce gets thickened with cornstarch for that perfect glossy drizzle. Restaurant quality, home kitchen effort.",
+          sourceUrl: "https://therealfooddietitians.com/teriyaki-salmon-bowls/",
+          sourceName: "The Real Food Dietitians",
+          gradient: ["#D4C8E0", "#B0A0C8"],
+          emoji: "🐟",
+          sections: [
+            {
+              title: "Salmon",
+              items: ["4 salmon fillets (5–6 oz each), skin on", "Salt and black pepper"]
+            },
+            {
+              title: "Teriyaki Sauce",
+              items: ["⅓ cup coconut aminos (or low-sodium soy sauce)", "2 Tbsp honey", "1 Tbsp rice vinegar", "1 tsp toasted sesame oil", "2 cloves garlic, minced", "1 tsp fresh ginger, grated", "1 Tbsp cornstarch + 1 Tbsp warm water"]
+            },
+            {
+              title: "Bowl",
+              items: ["3 cups cooked rice", "1 cucumber, sliced", "1 cup shelled edamame", "1 cup shredded carrots", "1 avocado, sliced", "Sliced green onions", "Sesame seeds"]
+            }
+          ],
+          steps: ["Season salmon with salt and pepper.", "Whisk together teriyaki sauce ingredients (except cornstarch).", "Pour half the sauce over salmon, flip skin-side up. Marinate while prepping veggies.", "Preheat broiler. Place salmon skin-side down on foil-lined sheet.", "Broil until fish flakes easily with a fork, about 8–10 min.", "Heat remaining sauce in a small pan. Add cornstarch slurry, simmer until thick.", "Assemble bowls: rice, salmon, veggies. Drizzle with sauce, top with green onions and sesame seeds."]
+        },
+        {
+          id: "chicken-tacos",
+          name: "Chicken Tacos",
+          subtitle: "The Meal That Never Gets Old",
+          time: "20 min",
+          method: "Skillet",
+          description: "Quick seasoned chicken, crispy shells, all the fixings. The meal that never gets old.",
+          longDescription: "The ultimate Taco Tuesday staple. Ground chicken simmers with sautéed onions, peppers, and a warm blend of paprika, cumin, ancho chili, and oregano. The tomato sauce ties it all together. Spoon into crispy shells and let everyone top their own.",
+          sourceUrl: "https://www.onceuponachef.com/recipes/chicken-tacos.html",
+          sourceName: "Once Upon a Chef",
+          gradient: ["#E8D0B4", "#D4B48C"],
+          emoji: "🌮",
+          sections: [
+            {
+              title: "Taco Filling",
+              items: ["¼ cup olive oil", "2 medium yellow onions, finely chopped", "2 bell peppers, finely chopped", "4 cloves garlic, finely chopped", "2 lbs ground chicken", "1 Tbsp paprika", "2 tsp ancho chili powder", "1½ tsp ground cumin", "½ tsp dried oregano", "⅛ tsp cayenne pepper (optional)", "1¾ tsp salt", "1 can (8 oz) tomato sauce", "½ cup chopped fresh cilantro"]
+            },
+            {
+              title: "To Serve",
+              items: ["12 hard taco shells", "Shredded lettuce or red cabbage", "Shredded Mexican cheese blend", "Sour cream", "Avocado", "Lime wedges"]
+            }
+          ],
+          steps: ["Heat olive oil over medium. Cook onions, peppers, garlic 10–15 min until soft.", "Add chicken, all spices, and salt. Increase heat to high.", "Break chicken into small clumps. Cook 5 minutes until partially done.", "Stir in tomato sauce. Reduce heat, simmer 12–15 minutes.", "Stir in cilantro. Adjust seasoning.", "Warm taco shells at 325°F for 6–7 minutes.", "Spoon filling into shells, add toppings."]
+        }
+      ];
 
-    <!-- Recipe Grid -->
-    <main class="max-w-6xl mx-auto px-6 pb-24">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      function Sidebar({ currentRecipe, onNavigate }) {
+        return (
+          <aside className="w-64 min-h-screen border-r border-warm/60 px-6 py-8 hidden lg:block fixed left-0 top-0 overflow-y-auto bg-cream" style={{height:'100vh'}}>
+            <button onClick={() => onNavigate(null)} className="block mb-8 cursor-pointer">
+              <h1 className="font-serif text-xl leading-tight">
+                Konzelhaus<br/><em className="text-sage">Dinners</em>
+              </h1>
+            </button>
 
-            <!-- 1. Pasta & Meatballs -->
-            <a href="https://wearychef.com/recipe/cheesy-skillet-pasta-meatballs-broccoli/" target="_blank" rel="noopener"
-               class="recipe-card block bg-white rounded-2xl p-8 shadow-sm border border-warm/60">
-                <div class="flex items-center justify-between mb-4">
-                    <span class="time-badge text-white text-xs font-semibold px-3 py-1 rounded-full">20 min</span>
-                    <span class="text-muted text-xs">One Skillet</span>
+            <nav>
+              <button onClick={() => onNavigate(null)}
+                className={`sidebar-link w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm mb-1 ${!currentRecipe ? 'active font-medium' : 'text-muted'}`}>
+                <span>🏠</span> Cover
+              </button>
+
+              <p className="text-xs tracking-widest uppercase text-muted mt-6 mb-3 px-3">The Menu</p>
+
+              {recipes.map(r => (
+                <button key={r.id} onClick={() => onNavigate(r.id)}
+                  className={`sidebar-link w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm mb-0.5 ${currentRecipe === r.id ? 'active font-medium' : 'text-muted'}`}>
+                  <span>{r.emoji}</span> {r.name}
+                </button>
+              ))}
+            </nav>
+
+            <p className="text-xs italic text-muted/60 mt-12 px-3 leading-relaxed">
+              "Quick meals, happy family,<br/>full bellies."
+            </p>
+          </aside>
+        );
+      }
+
+      function MobileNav({ currentRecipe, onNavigate }) {
+        const [open, setOpen] = useState(false);
+        return (
+          <div className="lg:hidden">
+            <div className="fixed top-0 left-0 right-0 bg-cream/95 backdrop-blur-sm border-b border-warm/60 z-50 px-4 py-3 flex items-center justify-between">
+              <button onClick={() => onNavigate(null)} className="font-serif text-lg">
+                Konzelhaus <em className="text-sage">Dinners</em>
+              </button>
+              <button onClick={() => setOpen(!open)} className="p-2 text-muted">
+                {open ? '✕' : '☰'}
+              </button>
+            </div>
+            {open && (
+              <div className="fixed inset-0 bg-cream z-40 pt-16 px-6 py-8 overflow-y-auto">
+                <button onClick={() => { onNavigate(null); setOpen(false); }}
+                  className="block w-full text-left px-3 py-3 text-sm rounded-lg mb-1 hover:bg-warm/40">
+                  🏠 Cover
+                </button>
+                {recipes.map(r => (
+                  <button key={r.id} onClick={() => { onNavigate(r.id); setOpen(false); }}
+                    className={`block w-full text-left px-3 py-3 text-sm rounded-lg mb-0.5 ${currentRecipe === r.id ? 'bg-sage/10 text-sage font-medium' : ''}`}>
+                    {r.emoji} {r.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      function CoverPage({ onNavigate }) {
+        return (
+          <div className="min-h-screen flex flex-col">
+            {/* Hero */}
+            <div className="flex-1 flex flex-col items-center justify-center text-center px-6 py-16">
+              <p className="text-muted text-sm tracking-widest uppercase mb-6">The Konzelmann Family</p>
+              <h1 className="font-serif text-6xl md:text-8xl leading-tight mb-6">
+                Weeknight<br/><em className="text-sage">Dinners</em>
+              </h1>
+              <p className="text-muted text-lg max-w-md leading-relaxed mb-10">
+                Nine tried-and-true meals. All under 30 minutes of prep. Built for busy nights and hungry kids.
+              </p>
+              <button onClick={() => onNavigate(recipes[0].id)}
+                className="inline-flex items-center gap-2 bg-charcoal text-white px-8 py-3.5 rounded-full text-sm font-medium hover:bg-charcoal/90 transition-colors">
+                Start Cooking <span>→</span>
+              </button>
+            </div>
+
+            {/* Recipe Grid */}
+            <div className="max-w-5xl mx-auto px-6 pb-20">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {recipes.map(r => (
+                  <button key={r.id} onClick={() => onNavigate(r.id)}
+                    className="recipe-card text-left bg-white rounded-2xl overflow-hidden shadow-sm border border-warm/60">
+                    <div className="h-32 hero-gradient flex items-end p-6" style={{'--g1': r.gradient[0], '--g2': r.gradient[1]}}>
+                      <span className="text-4xl">{r.emoji}</span>
+                    </div>
+                    <div className="p-6">
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="time-badge text-white text-xs font-semibold px-3 py-1 rounded-full">{r.time}</span>
+                        <span className="text-muted text-xs">{r.method}</span>
+                      </div>
+                      <h3 className="font-serif text-xl mb-2">{r.name}</h3>
+                      <p className="text-muted text-sm leading-relaxed">{r.description}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <footer className="text-center pb-12">
+              <p className="text-muted text-sm">Made with love for the Konzelmanns</p>
+            </footer>
+          </div>
+        );
+      }
+
+      function RecipePage({ recipe, onNavigate }) {
+        const idx = recipes.findIndex(r => r.id === recipe.id);
+        const prev = idx > 0 ? recipes[idx - 1] : null;
+        const next = idx < recipes.length - 1 ? recipes[idx + 1] : null;
+
+        return (
+          <div className="min-h-screen pb-20">
+            {/* Hero area */}
+            <div className="flex flex-col lg:flex-row gap-0">
+              {/* Gradient hero */}
+              <div className="h-64 lg:h-auto lg:w-2/5 hero-gradient flex items-center justify-center"
+                   style={{'--g1': recipe.gradient[0], '--g2': recipe.gradient[1]}}>
+                <span className="text-8xl lg:text-9xl">{recipe.emoji}</span>
+              </div>
+
+              {/* Recipe header */}
+              <div className="lg:w-3/5 px-8 py-10 lg:py-16 lg:px-12">
+                <button onClick={() => onNavigate(null)}
+                  className="text-muted text-sm hover:text-sage transition-colors mb-6 inline-flex items-center gap-1">
+                  ← Back to Menu
+                </button>
+                <h1 className="font-serif text-4xl lg:text-5xl mb-2">{recipe.name}</h1>
+                <p className="font-serif text-xl italic text-sage mb-6">{recipe.subtitle}</p>
+                <p className="text-muted leading-relaxed mb-6 max-w-lg">{recipe.longDescription}</p>
+                <div className="flex items-center gap-4">
+                  <span className="time-badge text-white text-sm font-semibold px-4 py-1.5 rounded-full">{recipe.time}</span>
+                  <span className="text-muted text-sm">{recipe.method}</span>
                 </div>
-                <h2 class="font-serif text-2xl mb-3">Pasta &amp; Meatballs</h2>
-                <p class="text-muted text-sm leading-relaxed">
-                    Cheesy skillet pasta with meatballs and broccoli. Everything cooks together — kid-approved comfort food.
-                </p>
-            </a>
+              </div>
+            </div>
 
-            <!-- 2. Gyro Pita -->
-            <a href="https://www.wenthere8this.com/chicken-gyro-pita/" target="_blank" rel="noopener"
-               class="recipe-card block bg-white rounded-2xl p-8 shadow-sm border border-warm/60">
-                <div class="flex items-center justify-between mb-4">
-                    <span class="time-badge text-white text-xs font-semibold px-3 py-1 rounded-full">25 min</span>
-                    <span class="text-muted text-xs">Build Your Own</span>
+            {/* Content */}
+            <div className="max-w-3xl mx-auto px-8 lg:px-12 mt-12">
+              {/* Ingredient sections */}
+              {recipe.sections.map((section, i) => (
+                <div key={i} className="ingredient-card bg-white rounded-xl p-6 mb-6 shadow-sm">
+                  <h3 className="text-sage font-semibold text-sm tracking-widest uppercase mb-4">{section.title}</h3>
+                  <ul className="space-y-2.5">
+                    {section.items.map((item, j) => (
+                      <li key={j} className="text-sm flex items-start gap-3">
+                        <span className="text-sage mt-1.5 text-xs">●</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <h2 class="font-serif text-2xl mb-3">Gyro Pita</h2>
-                <p class="text-muted text-sm leading-relaxed">
-                    Seasoned chicken, quick homemade tzatziki, warm pitas. Set out toppings and let everyone build their own.
+              ))}
+
+              {/* Steps */}
+              <div className="mt-10 mb-12">
+                <h3 className="text-sage font-semibold text-sm tracking-widest uppercase mb-6">How to Make It</h3>
+                <ol className="space-y-4">
+                  {recipe.steps.map((step, i) => (
+                    <li key={i} className="flex gap-4 items-start">
+                      <span className="flex-shrink-0 w-7 h-7 rounded-full bg-sage/10 text-sage text-xs font-semibold flex items-center justify-center mt-0.5">
+                        {i + 1}
+                      </span>
+                      <p className="text-sm leading-relaxed">{step}</p>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+
+              {/* Source */}
+              <div className="border-t border-warm/60 pt-6 mb-12">
+                <p className="text-muted text-sm">
+                  Adapted from <a href={recipe.sourceUrl} target="_blank" rel="noopener"
+                    className="text-sage underline hover:text-sagedark">{recipe.sourceName}</a>
                 </p>
-            </a>
+              </div>
 
-            <!-- 3. Sheet Pan Chicken -->
-            <a href="https://www.cookingclassy.com/chicken-broccoli-sweet-potato-sheet-pan-dinner/" target="_blank" rel="noopener"
-               class="recipe-card block bg-white rounded-2xl p-8 shadow-sm border border-warm/60">
-                <div class="flex items-center justify-between mb-4">
-                    <span class="time-badge text-white text-xs font-semibold px-3 py-1 rounded-full">40 min</span>
-                    <span class="text-muted text-xs">Sheet Pan</span>
-                </div>
-                <h2 class="font-serif text-2xl mb-3">Chicken &amp; Sweet Potatoes</h2>
-                <p class="text-muted text-sm leading-relaxed">
-                    One pan — chicken thighs, sweet potatoes, broccoli with herbs. 10 min prep, then the oven does the work.
-                </p>
-            </a>
+              {/* Prev/Next */}
+              <div className="flex justify-between items-center border-t border-warm/60 pt-6">
+                {prev ? (
+                  <button onClick={() => onNavigate(prev.id)}
+                    className="text-sm text-muted hover:text-sage transition-colors flex items-center gap-2">
+                    ← {prev.name}
+                  </button>
+                ) : <div />}
+                {next ? (
+                  <button onClick={() => onNavigate(next.id)}
+                    className="text-sm text-muted hover:text-sage transition-colors flex items-center gap-2">
+                    {next.name} →
+                  </button>
+                ) : <div />}
+              </div>
+            </div>
+          </div>
+        );
+      }
 
-            <!-- 4. Gnocchi -->
-            <a href="https://thehungrymusician.com/recipes/sheet-pan-gnocchi-fennel-chicken-sausage" target="_blank" rel="noopener"
-               class="recipe-card block bg-white rounded-2xl p-8 shadow-sm border border-warm/60">
-                <div class="flex items-center justify-between mb-4">
-                    <span class="time-badge text-white text-xs font-semibold px-3 py-1 rounded-full">35 min</span>
-                    <span class="text-muted text-xs">Sheet Pan</span>
-                </div>
-                <h2 class="font-serif text-2xl mb-3">Gnocchi, Fennel &amp; Sausage</h2>
-                <p class="text-muted text-sm leading-relaxed">
-                    Toss gnocchi, sliced fennel, and chicken sausage with olive oil. Roast until crispy and golden.
-                </p>
-            </a>
+      function App() {
+        const [currentRecipe, setCurrentRecipe] = useState(null);
 
-            <!-- 5. Curry Chicken -->
-            <a href="https://www.cleaneatingmag.com/recipes/curried-chicken-with-peas/" target="_blank" rel="noopener"
-               class="recipe-card block bg-white rounded-2xl p-8 shadow-sm border border-warm/60">
-                <div class="flex items-center justify-between mb-4">
-                    <span class="time-badge text-white text-xs font-semibold px-3 py-1 rounded-full">25 min</span>
-                    <span class="text-muted text-xs">Stovetop</span>
-                </div>
-                <h2 class="font-serif text-2xl mb-3">Indian Chicken &amp; Peas</h2>
-                <p class="text-muted text-sm leading-relaxed">
-                    Quick curry with chicken, peas, and warm spices. Serve over basmati rice for a cozy weeknight meal.
-                </p>
-            </a>
+        useEffect(() => {
+          const handleHash = () => {
+            const hash = window.location.hash.slice(2);
+            if (hash && recipes.find(r => r.id === hash)) {
+              setCurrentRecipe(hash);
+            } else {
+              setCurrentRecipe(null);
+            }
+          };
+          handleHash();
+          window.addEventListener('hashchange', handleHash);
+          return () => window.removeEventListener('hashchange', handleHash);
+        }, []);
 
-            <!-- 6. Chicken Burger -->
-            <a href="https://www.budgetbytes.com/chicken-burger/" target="_blank" rel="noopener"
-               class="recipe-card block bg-white rounded-2xl p-8 shadow-sm border border-warm/60">
-                <div class="flex items-center justify-between mb-4">
-                    <span class="time-badge text-white text-xs font-semibold px-3 py-1 rounded-full">25 min</span>
-                    <span class="text-muted text-xs">Skillet / Grill</span>
-                </div>
-                <h2 class="font-serif text-2xl mb-3">Chicken Burgers</h2>
-                <p class="text-muted text-sm leading-relaxed">
-                    Seasoned ground chicken patties, pan-fried or grilled. Lighter than beef but still juicy and satisfying.
-                </p>
-            </a>
+        const navigate = (id) => {
+          window.location.hash = id ? `/${id}` : '/';
+          setCurrentRecipe(id);
+          window.scrollTo(0, 0);
+        };
 
-            <!-- 7. Pizza -->
-            <a href="https://joyfoodsunshine.com/easy-homemade-pizza-dough/" target="_blank" rel="noopener"
-               class="recipe-card block bg-white rounded-2xl p-8 shadow-sm border border-warm/60">
-                <div class="flex items-center justify-between mb-4">
-                    <span class="time-badge text-white text-xs font-semibold px-3 py-1 rounded-full">30 min</span>
-                    <span class="text-muted text-xs">Family Activity</span>
-                </div>
-                <h2 class="font-serif text-2xl mb-3">Homemade Pizza</h2>
-                <p class="text-muted text-sm leading-relaxed">
-                    5-ingredient no-rise dough, ready in 30 minutes total. Kids pick their own toppings — everyone wins.
-                </p>
-            </a>
+        const recipe = recipes.find(r => r.id === currentRecipe);
 
-            <!-- 8. Salmon -->
-            <a href="https://therealfooddietitians.com/teriyaki-salmon-bowls/" target="_blank" rel="noopener"
-               class="recipe-card block bg-white rounded-2xl p-8 shadow-sm border border-warm/60">
-                <div class="flex items-center justify-between mb-4">
-                    <span class="time-badge text-white text-xs font-semibold px-3 py-1 rounded-full">30 min</span>
-                    <span class="text-muted text-xs">Bowl</span>
-                </div>
-                <h2 class="font-serif text-2xl mb-3">Salmon &amp; Rice Bowls</h2>
-                <p class="text-muted text-sm leading-relaxed">
-                    Teriyaki-glazed salmon over rice with cucumber, avocado, and edamame. Healthy and beautiful.
-                </p>
-            </a>
+        return (
+          <div className="flex">
+            <Sidebar currentRecipe={currentRecipe} onNavigate={navigate} />
+            <MobileNav currentRecipe={currentRecipe} onNavigate={navigate} />
+            <main className="flex-1 lg:ml-64 min-h-screen pt-14 lg:pt-0">
+              {recipe ? (
+                <RecipePage recipe={recipe} onNavigate={navigate} />
+              ) : (
+                <CoverPage onNavigate={navigate} />
+              )}
+            </main>
+          </div>
+        );
+      }
 
-            <!-- 9. Tacos -->
-            <a href="https://www.onceuponachef.com/recipes/chicken-tacos.html" target="_blank" rel="noopener"
-               class="recipe-card block bg-white rounded-2xl p-8 shadow-sm border border-warm/60">
-                <div class="flex items-center justify-between mb-4">
-                    <span class="time-badge text-white text-xs font-semibold px-3 py-1 rounded-full">20 min</span>
-                    <span class="text-muted text-xs">Everyone's Favorite</span>
-                </div>
-                <h2 class="font-serif text-2xl mb-3">Chicken Tacos</h2>
-                <p class="text-muted text-sm leading-relaxed">
-                    Quick seasoned chicken, crispy shells, all the fixings. The meal that never gets old.
-                </p>
-            </a>
-
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="text-center pb-16">
-        <p class="text-muted text-sm">Made with love for the Konzelmanns</p>
-    </footer>
-
+      ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
 </body>
 </html>
