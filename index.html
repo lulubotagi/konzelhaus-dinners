@@ -4,19 +4,188 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Konzelhaus Weeknight Dinners</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              serif: ['DM Serif Display', 'Georgia', 'serif'],
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+            },
+            colors: {
+              cream: '#FAF7F2',
+              warm: '#F5EDE3',
+              terra: '#C4704B',
+              terradark: '#A85A38',
+              charcoal: '#2D2D2D',
+              muted: '#8B8680',
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body { background-color: #FAF7F2; }
+      .recipe-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .recipe-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+      }
+      .time-badge {
+        background: linear-gradient(135deg, #C4704B, #A85A38);
+      }
+    </style>
 </head>
-<body>
-    <header class="bg-amber-100 py-4">
-        <h1 class="text-2xl font-bold text-center">Konzelhaus Weeknight Dinners</h1>
+<body class="font-sans text-charcoal antialiased">
+
+    <!-- Hero -->
+    <header class="px-6 pt-16 pb-12 md:pt-24 md:pb-16 max-w-4xl mx-auto text-center">
+        <p class="text-muted text-sm tracking-widest uppercase mb-4">The Konzelmann Family</p>
+        <h1 class="font-serif text-5xl md:text-7xl text-charcoal leading-tight">
+            Weeknight<br><em>Dinners</em>
+        </h1>
+        <p class="mt-6 text-muted text-lg max-w-md mx-auto leading-relaxed">
+            Nine tried-and-true meals. All under 30 minutes of prep. Built for busy nights and hungry kids.
+        </p>
     </header>
-    <p class="text-center">Welcome to our collection of quick and easy weeknight dinner recipes!</p>
-    <nav class="bg-amber-50">
-        <ul class="flex flex-col">
-            <li class="p-2"><a href="#">Pasta and Meatballs</a></li>
-            <li class="p-2"><a href="#">Gyro Pita</a></li>
-            <li class="p-2"><a href="#">Sheet Pan Chicken</a></li>
-            </ul>
-    </nav>
+
+    <!-- Divider -->
+    <div class="max-w-16 mx-auto border-t border-terra/30 mb-12"></div>
+
+    <!-- Recipe Grid -->
+    <main class="max-w-6xl mx-auto px-6 pb-24">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            <!-- 1. Pasta & Meatballs -->
+            <a href="https://wearychef.com/recipe/cheesy-skillet-pasta-meatballs-broccoli/" target="_blank" rel="noopener"
+               class="recipe-card block bg-white rounded-2xl p-8 shadow-sm border border-warm/60">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="time-badge text-white text-xs font-semibold px-3 py-1 rounded-full">20 min</span>
+                    <span class="text-muted text-xs">One Skillet</span>
+                </div>
+                <h2 class="font-serif text-2xl mb-3">Pasta &amp; Meatballs</h2>
+                <p class="text-muted text-sm leading-relaxed">
+                    Cheesy skillet pasta with meatballs and broccoli. Everything cooks together — kid-approved comfort food.
+                </p>
+            </a>
+
+            <!-- 2. Gyro Pita -->
+            <a href="https://www.wenthere8this.com/chicken-gyro-pita/" target="_blank" rel="noopener"
+               class="recipe-card block bg-white rounded-2xl p-8 shadow-sm border border-warm/60">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="time-badge text-white text-xs font-semibold px-3 py-1 rounded-full">25 min</span>
+                    <span class="text-muted text-xs">Build Your Own</span>
+                </div>
+                <h2 class="font-serif text-2xl mb-3">Gyro Pita</h2>
+                <p class="text-muted text-sm leading-relaxed">
+                    Seasoned chicken, quick homemade tzatziki, warm pitas. Set out toppings and let everyone build their own.
+                </p>
+            </a>
+
+            <!-- 3. Sheet Pan Chicken -->
+            <a href="https://www.cookingclassy.com/chicken-broccoli-sweet-potato-sheet-pan-dinner/" target="_blank" rel="noopener"
+               class="recipe-card block bg-white rounded-2xl p-8 shadow-sm border border-warm/60">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="time-badge text-white text-xs font-semibold px-3 py-1 rounded-full">40 min</span>
+                    <span class="text-muted text-xs">Sheet Pan</span>
+                </div>
+                <h2 class="font-serif text-2xl mb-3">Chicken &amp; Sweet Potatoes</h2>
+                <p class="text-muted text-sm leading-relaxed">
+                    One pan — chicken thighs, sweet potatoes, broccoli with herbs. 10 min prep, then the oven does the work.
+                </p>
+            </a>
+
+            <!-- 4. Gnocchi -->
+            <a href="https://thehungrymusician.com/recipes/sheet-pan-gnocchi-fennel-chicken-sausage" target="_blank" rel="noopener"
+               class="recipe-card block bg-white rounded-2xl p-8 shadow-sm border border-warm/60">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="time-badge text-white text-xs font-semibold px-3 py-1 rounded-full">35 min</span>
+                    <span class="text-muted text-xs">Sheet Pan</span>
+                </div>
+                <h2 class="font-serif text-2xl mb-3">Gnocchi, Fennel &amp; Sausage</h2>
+                <p class="text-muted text-sm leading-relaxed">
+                    Toss gnocchi, sliced fennel, and chicken sausage with olive oil. Roast until crispy and golden.
+                </p>
+            </a>
+
+            <!-- 5. Curry Chicken -->
+            <a href="https://www.cleaneatingmag.com/recipes/curried-chicken-with-peas/" target="_blank" rel="noopener"
+               class="recipe-card block bg-white rounded-2xl p-8 shadow-sm border border-warm/60">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="time-badge text-white text-xs font-semibold px-3 py-1 rounded-full">25 min</span>
+                    <span class="text-muted text-xs">Stovetop</span>
+                </div>
+                <h2 class="font-serif text-2xl mb-3">Indian Chicken &amp; Peas</h2>
+                <p class="text-muted text-sm leading-relaxed">
+                    Quick curry with chicken, peas, and warm spices. Serve over basmati rice for a cozy weeknight meal.
+                </p>
+            </a>
+
+            <!-- 6. Chicken Burger -->
+            <a href="https://www.budgetbytes.com/chicken-burger/" target="_blank" rel="noopener"
+               class="recipe-card block bg-white rounded-2xl p-8 shadow-sm border border-warm/60">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="time-badge text-white text-xs font-semibold px-3 py-1 rounded-full">25 min</span>
+                    <span class="text-muted text-xs">Skillet / Grill</span>
+                </div>
+                <h2 class="font-serif text-2xl mb-3">Chicken Burgers</h2>
+                <p class="text-muted text-sm leading-relaxed">
+                    Seasoned ground chicken patties, pan-fried or grilled. Lighter than beef but still juicy and satisfying.
+                </p>
+            </a>
+
+            <!-- 7. Pizza -->
+            <a href="https://joyfoodsunshine.com/easy-homemade-pizza-dough/" target="_blank" rel="noopener"
+               class="recipe-card block bg-white rounded-2xl p-8 shadow-sm border border-warm/60">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="time-badge text-white text-xs font-semibold px-3 py-1 rounded-full">30 min</span>
+                    <span class="text-muted text-xs">Family Activity</span>
+                </div>
+                <h2 class="font-serif text-2xl mb-3">Homemade Pizza</h2>
+                <p class="text-muted text-sm leading-relaxed">
+                    5-ingredient no-rise dough, ready in 30 minutes total. Kids pick their own toppings — everyone wins.
+                </p>
+            </a>
+
+            <!-- 8. Salmon -->
+            <a href="https://therealfooddietitians.com/teriyaki-salmon-bowls/" target="_blank" rel="noopener"
+               class="recipe-card block bg-white rounded-2xl p-8 shadow-sm border border-warm/60">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="time-badge text-white text-xs font-semibold px-3 py-1 rounded-full">30 min</span>
+                    <span class="text-muted text-xs">Bowl</span>
+                </div>
+                <h2 class="font-serif text-2xl mb-3">Salmon &amp; Rice Bowls</h2>
+                <p class="text-muted text-sm leading-relaxed">
+                    Teriyaki-glazed salmon over rice with cucumber, avocado, and edamame. Healthy and beautiful.
+                </p>
+            </a>
+
+            <!-- 9. Tacos -->
+            <a href="https://www.onceuponachef.com/recipes/chicken-tacos.html" target="_blank" rel="noopener"
+               class="recipe-card block bg-white rounded-2xl p-8 shadow-sm border border-warm/60">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="time-badge text-white text-xs font-semibold px-3 py-1 rounded-full">20 min</span>
+                    <span class="text-muted text-xs">Everyone's Favorite</span>
+                </div>
+                <h2 class="font-serif text-2xl mb-3">Chicken Tacos</h2>
+                <p class="text-muted text-sm leading-relaxed">
+                    Quick seasoned chicken, crispy shells, all the fixings. The meal that never gets old.
+                </p>
+            </a>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center pb-16">
+        <p class="text-muted text-sm">Made with love for the Konzelmanns</p>
+    </footer>
+
 </body>
 </html>
