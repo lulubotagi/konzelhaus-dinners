@@ -1,4 +1,4 @@
-const CACHE_NAME = 'konzelhaus-dinners-cache-v1';
+const CACHE_NAME = 'konzelhaus-dinners-cache-v2';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -6,12 +6,33 @@ const urlsToCache = [
 ];
 
 self.addEventListener('install', (event) => {
+  // Skip waiting allows the new service worker to become active immediately
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('Opened cache');
         return cache.addAll(urlsToCache);
       })
+  );
+});
+
+self.addEventListener('activate', (event) => {
+  // Delete old caches
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheName !== CACHE_NAME) {
+            console.log('Deleting old cache:', cacheName);
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    }).then(() => {
+      // Take control of all clients immediately
+      return self.clients.claim();
+    })
   );
 });
 
