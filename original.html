@@ -4,12 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Konzelhaus Weeknight Dinners</title>
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#5B7A5E">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Konzelhaus Dinners">
-    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -72,7 +66,6 @@
           sourceName: "The Weary Chef",
           gradient: ["#E8D5B7", "#D4A574"],
           emoji: "🍝",
-          image: "https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?w=600&q=80",
           sections: [
             {
               title: "Ingredients",
@@ -93,7 +86,6 @@
           sourceName: "Went Here 8 This",
           gradient: ["#D4E8D0", "#A8C9A4"],
           emoji: "🥙",
-          image: "https://images.unsplash.com/photo-1561651823-34feb02250e4?w=600&q=80",
           sections: [
             {
               title: "Chicken Marinade",
@@ -122,7 +114,6 @@
           sourceName: "Cooking Classy",
           gradient: ["#F0D4B8", "#E0A87C"],
           emoji: "🍠",
-          image: "https://images.unsplash.com/photo-1604908177453-7462950a6a3b?w=600&q=80",
           sections: [
             {
               title: "Main Ingredients",
@@ -151,7 +142,6 @@
           sourceName: "The Hungry Musician",
           gradient: ["#E0D8CC", "#C4B8A4"],
           emoji: "🫓",
-          image: "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=600&q=80",
           sections: [
             {
               title: "Ingredients",
@@ -172,7 +162,6 @@
           sourceName: "Clean Eating",
           gradient: ["#F0E0B0", "#D4C080"],
           emoji: "🍛",
-          image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600&q=80",
           sections: [
             {
               title: "Curry",
@@ -197,7 +186,6 @@
           sourceName: "Budget Bytes",
           gradient: ["#E8D0C0", "#D4A890"],
           emoji: "🍔",
-          image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80",
           sections: [
             {
               title: "Burger Patties",
@@ -222,7 +210,6 @@
           sourceName: "Joy Food Sunshine",
           gradient: ["#F2D4C0", "#E0B090"],
           emoji: "🍕",
-          image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&q=80",
           sections: [
             {
               title: "Pizza Dough",
@@ -247,7 +234,6 @@
           sourceName: "The Real Food Dietitians",
           gradient: ["#D4C8E0", "#B0A0C8"],
           emoji: "🐟",
-          image: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=600&q=80",
           sections: [
             {
               title: "Salmon",
@@ -276,7 +262,6 @@
           sourceName: "Once Upon a Chef",
           gradient: ["#E8D0B4", "#D4B48C"],
           emoji: "🌮",
-          image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80",
           sections: [
             {
               title: "Taco Filling",
@@ -377,19 +362,13 @@
                 {recipes.map(r => (
                   <button key={r.id} onClick={() => onNavigate(r.id)}
                     className="recipe-card text-left bg-white rounded-2xl overflow-hidden shadow-sm border border-warm/60">
-                    <div className="h-44 relative overflow-hidden">
-                      {r.image ? (
-                        <img src={r.image} alt={r.name} className="w-full h-full object-cover" loading="lazy" />
-                      ) : (
-                        <div className="w-full h-full hero-gradient flex items-end p-6" style={{'--g1': r.gradient[0], '--g2': r.gradient[1]}}>
-                          <span className="text-4xl">{r.emoji}</span>
-                        </div>
-                      )}
+                    <div className="h-32 hero-gradient flex items-end p-6" style={{'--g1': r.gradient[0], '--g2': r.gradient[1]}}>
+                      <span className="text-4xl">{r.emoji}</span>
                     </div>
                     <div className="p-6">
                       <div className="flex items-center justify-between mb-3">
-                        <span className="time-badge text-white text-sm font-semibold px-4 py-1.5 rounded-full">{r.time}</span>
-                        <span className="text-muted text-sm">{r.method}</span>
+                        <span className="time-badge text-white text-xs font-semibold px-3 py-1 rounded-full">{r.time}</span>
+                        <span className="text-muted text-xs">{r.method}</span>
                       </div>
                       <h3 className="font-serif text-xl mb-2">{r.name}</h3>
                       <p className="text-muted text-sm leading-relaxed">{r.description}</p>
@@ -415,16 +394,10 @@
           <div className="min-h-screen pb-20">
             {/* Hero area */}
             <div className="flex flex-col lg:flex-row gap-0">
-              {/* Hero image */}
-              <div className="h-64 lg:h-auto lg:w-2/5 overflow-hidden">
-                {recipe.image ? (
-                  <img src={recipe.image} alt={recipe.name} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full hero-gradient flex items-center justify-center"
-                       style={{'--g1': recipe.gradient[0], '--g2': recipe.gradient[1]}}>
-                    <span className="text-8xl lg:text-9xl">{recipe.emoji}</span>
-                  </div>
-                )}
+              {/* Gradient hero */}
+              <div className="h-64 lg:h-auto lg:w-2/5 hero-gradient flex items-center justify-center"
+                   style={{'--g1': recipe.gradient[0], '--g2': recipe.gradient[1]}}>
+                <span className="text-8xl lg:text-9xl">{recipe.emoji}</span>
               </div>
 
               {/* Recipe header */}
@@ -544,17 +517,6 @@
       }
 
       ReactDOM.createRoot(document.getElementById('root')).render(<App />);
-    </script>
-    <script>
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js')
-          .then(registration => {
-            console.log('ServiceWorker registration successful with scope:', registration.scope);
-          })
-          .catch(error => {
-            console.log('ServiceWorker registration failed:', error);
-          });
-      }
     </script>
 </body>
 </html>
